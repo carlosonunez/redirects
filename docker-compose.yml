@@ -2,49 +2,17 @@
 version: "2.2"
 services:
   terraform:
-    image: hashicorp/terraform:light
+    build:
+      dockerfile: terraform.Dockerfile
+      context: .
+    entrypoint: /scripts/execute_terraform.sh
     env_file: .env
-    volumes:
-      - "$HOME/.aws:/root/.aws"
-      - "$PWD:/app"
     working_dir: /app
     environment:
-      - AWS_ACCESS_KEY_ID
-      - AWS_SECRET_ACCESS_KEY
-      - AWS_REGION
-      - TF_CLI_ARGS_init=-backend=true -backend-config=backend.tfvars -reconfigure
-      - TF_CLI_ARGS_plan=-lock=false
-      - TF_CLI_ARGS_apply=-lock=false
-      - TF_CLI_ARGS_destroy=-lock=false
-      - TF_VAR_aws_access_key_id=$AWS_ACCESS_KEY_ID
-      - TF_VAR_aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
-      - TF_VAR_aws_region=$AWS_REGION
-  generate-terraform-vars:
-    image: hairyhenderson/gomplate
-    env_file: .env
+      TF_VAR_domain_name: $DOMAIN_NAME
+      TF_DATA_DIR: /app/.terraform
     volumes:
-      - "$PWD:/app"
-    working_dir: /app
-    command:
-      - "--file"
-      - terraform.tfvars.tmpl
-      - "--out"
-      - "-"
-  generate-terraform-backend-vars:
-    image: hairyhenderson/gomplate
-    env_file: .env
-    volumes:
-      - "$PWD:/app"
-    working_dir: /app
-    command:
-      - "--file"
-      - backend.tfvars.tmpl
-      - "--out"
-      - "-"
-  terraform-init:
-    extends: terraform
-    command: 
-      - init
+      - $PWD:/app
   verify:
     extends: terraform
     command:
@@ -53,3 +21,9 @@ services:
     extends: terraform
     command:
       - apply
+      - -auto-approve
+  destroy:
+    extends: terraform
+    command:
+      - destroy
+      - -auto-approve
