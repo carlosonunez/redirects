@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - '*/**'
-      - '!README.md'
 jobs:
   update-redirects:
     runs-on: ubuntu-latest
