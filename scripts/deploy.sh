@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-scripts/initialize.sh && docker-compose run --rm deploy
+docker-compose run --rm terraform init && docker-compose run --rm deploy

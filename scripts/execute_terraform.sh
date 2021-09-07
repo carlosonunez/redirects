@@ -1,7 +1,9 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 source $(dirname "$0")/helpers/shared_secrets.sh
 TERRAFORM_STATE_S3_BUCKET="${TERRAFORM_STATE_S3_BUCKET?Please provide a S3 bucket to store state in.}"
 TERRAFORM_STATE_S3_KEY="${TERRAFORM_STATE_S3_KEY:-terraform_state}"
+AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID?Please provide an AWS access key.}"
+AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY?Please provide an AWS secret key.}"
 AWS_REGION="${AWS_REGION?Please provide an AWS region.}"
 WRITE_SECRETS="${WRITE_SECRETS:-false}"
 

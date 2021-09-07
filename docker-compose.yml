@@ -2,17 +2,21 @@
 version: "2.2"
 services:
   terraform:
-    build:
-      dockerfile: terraform.Dockerfile
-      context: .
-    entrypoint: /scripts/execute_terraform.sh
+    image: carlosnunez/terraform:1.0.4
     env_file: .env
     working_dir: /app
     environment:
-      TF_VAR_domain_name: $DOMAIN_NAME
-      TF_DATA_DIR: /app/.terraform
+      - TF_VAR_domain_name=$DOMAIN_NAME
+      - TF_DATA_DIR=/app/.terraform
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_REGION
+      - AWS_SESSION_TOKEN
     volumes:
       - $PWD:/app
+      - $PWD/scripts:/scripts
+    entrypoint:
+      - /scripts/execute_terraform.sh
   verify:
     extends: terraform
     command:

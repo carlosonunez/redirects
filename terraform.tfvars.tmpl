@@ -1,6 +1,0 @@
-domain_name="{{ getenv "DOMAIN_NAME" }}"
-domain_redirects_map={
-  {{- range $key, $value := (file.Read "domains.yml" | yaml).domains -}}
-  {{ $key }} = "{{ $value }}",
-  {{- end -}}
-}
