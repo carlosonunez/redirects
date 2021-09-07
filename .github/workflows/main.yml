@@ -7,8 +7,6 @@ on:
     paths:
       - '*/**'
       - '!README.md'
-      - '!bash_aliases'
-      - '!*.Dockerfile'
 jobs:
   update-redirects:
     runs-on: ubuntu-latest

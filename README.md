@@ -1,5 +1,7 @@
 # redirects
 
+[![Update Carlos's Redirects](https://github.com/carlosonunez/redirects/actions/workflows/main.yml/badge.svg)](https://github.com/carlosonunez/redirects/actions/workflows/main.yml)
+
 I maintain a bunch of convenience redirect URLs. The more scalable thing to do
 would be to bring up HAProxy and define them all as reverse proxies, but why do
 that when I can use S3 instead?
