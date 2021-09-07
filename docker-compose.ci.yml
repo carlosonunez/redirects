@@ -6,8 +6,6 @@ services:
     build:
       dockerfile: gpg.Dockerfile
       context: .
-    entrypoint:
-      - gpg
     working_dir: /app
     volumes:
       - $PWD:/app
