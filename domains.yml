@@ -8,3 +8,4 @@ domains:
   zoom: https://VMware.zoom.us/j/4639864787
   hosts-adg: https://github.com/carlosonunez/hosts/releases/download/latest/adguard-compatible-with-fb.txt
   hosts: https://github.com/carlosonunez/hosts/releases/download/latest/with-fb.txt
+  github: https://github.com/carlosonunez
