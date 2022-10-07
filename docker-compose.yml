@@ -9,7 +9,7 @@ services:
       - AWS_SECRET_ACCESS_KEY
       - AWS_ROLE_ARN
   terraform:
-    image: carlosnunez/terraform:1.0.4
+    image: carlosnunez/terraform:1.3.0
     env_file: .env
     working_dir: /app
     environment:
