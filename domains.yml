@@ -9,3 +9,5 @@ domains:
   hosts-adg: https://github.com/carlosonunez/hosts/releases/download/latest/adguard-compatible-with-fb.txt
   hosts: https://github.com/carlosonunez/hosts/releases/download/latest/with-fb.txt
   github: https://github.com/carlosonunez
+  dnsprofile: https://github.com/carlosonunez/bash-dotfiles/raw/main/ios-profiles/adguard-except-home-wifi.mobileconfig
+  traveldnsprofile: https://github.com/carlosonunez/bash-dotfiles/raw/main/ios-profiles/adguard-except-home-and-travel-router.mobileconfig
