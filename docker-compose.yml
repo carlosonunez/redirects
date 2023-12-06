@@ -1,5 +1,7 @@
 ---
 version: "2.2"
+volumes:
+  tf-data: {}
 services:
   aws:
     image: amazon/aws-cli:2.2.9
@@ -13,13 +15,14 @@ services:
     env_file: .env
     working_dir: /app
     environment:
+      - TF_DATA_DIR=/data/.terraform
       - TF_VAR_domain_name=$DOMAIN_NAME
-      - TF_DATA_DIR=/app/.terraform
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
       - AWS_REGION
       - AWS_SESSION_TOKEN
     volumes:
+      - tf-data:/data
       - $PWD:/app
       - $PWD/scripts:/scripts
     entrypoint:

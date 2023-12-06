@@ -1,53 +1,81 @@
-variable "domain_name" {
-  description = "The AWS Route53 domain to use."
+provider "aws" {
+  alias = "acm"
+  region = "us-east-1"
 }
-
 locals {
   redirect_data = yamldecode(file("./domains.yml"))
   redirect_names = local.redirect_data.domains
 }
+
+
+variable "domain_name" {
+  description = "The AWS Route53 domain to use."
+}
+
+data "aws_caller_identity" "self" {}
 
 data "aws_route53_zone" "zone_to_use" {
   name = var.domain_name
   private_zone = false
 }
 
-resource "aws_cloudfront_origin_access_identity" "website" {
+data "aws_iam_policy_document" "policy" {
   count = length(local.redirect_names)
-  comment = "HTTPS fronting for ${element(keys(local.redirect_names), count.index)}.${var.domain_name}"
+  statement {
+    sid = "SvcAccountCanDoAnything"
+    actions = ["s3:*"]
+    principals {
+      type = "AWS"
+      identifiers = [ data.aws_caller_identity.self.arn ]
+    }
+  }
+  statement {
+    sid = "PublicReadOnly"
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.redirect_bucket[count.index].arn}/*"]
+    principals {
+      type = "*"
+      identifiers = ["*"]
+    }
+  }
 }
 
 resource "aws_s3_bucket" "redirect_bucket" {
   count = length(local.redirect_names)
   bucket = "${element(keys(local.redirect_names), count.index)}.${var.domain_name}"
-  acl = "public-read"
-  website {
-    index_document = "index.html"
-    error_document = "error.html"
-  }
   tags = {
     "Managed-By": "https://github.com/carlosonunez/redirects"
   }
 }
 
-data "aws_iam_policy_document" "s3_policy" {
-  count = length(local.redirect_names)
-  statement {
-    actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.redirect_bucket[count.index].arn}/*"]
-
-    principals {
-      type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.website[count.index].iam_arn]
-    }
-  }
-}
-
-
 resource "aws_s3_bucket_policy" "example" {
   count = length(local.redirect_names)
   bucket = aws_s3_bucket.redirect_bucket[count.index].id
-  policy = data.aws_iam_policy_document.s3_policy[count.index].json
+  policy = data.aws_iam_policy_document.policy[count.index].json
+}
+
+resource "aws_s3_bucket_ownership_controls" "redirect_bucket" {
+  count = length(local.redirect_names)
+  bucket = aws_s3_bucket.redirect_bucket[count.index].id
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
+
+resource "aws_s3_bucket_website_configuration" "redirect_bucket" {
+  count = length(local.redirect_names)
+  bucket = aws_s3_bucket.redirect_bucket[count.index].id
+  index_document { suffix = "index.html" }
+  error_document { key = "error.html" }
+}
+
+resource "aws_s3_bucket_public_access_block" "redirect_bucket" {
+  count = length(local.redirect_names)
+  bucket = aws_s3_bucket.redirect_bucket[count.index].id
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 
 resource "aws_s3_bucket_object" "redirect_index_html" {
@@ -56,7 +84,6 @@ resource "aws_s3_bucket_object" "redirect_index_html" {
   ]
   count = length(local.redirect_names)
   bucket = "${element(keys(local.redirect_names), count.index)}.${var.domain_name}"
-  acl = "public-read"
   key = "index.html"
   content_type = "text/html; charset=UTF-8"
   content = <<-HTML
@@ -85,11 +112,6 @@ resource "aws_route53_record" "redirect_record" {
     zone_id = aws_cloudfront_distribution.website[count.index].hosted_zone_id
     evaluate_target_health = true
   }
-}
-
-provider "aws" {
-  alias = "acm"
-  region = "us-east-1"
 }
 
 resource "aws_acm_certificate" "aws_managed_https_certificate" {
@@ -125,6 +147,11 @@ resource "aws_acm_certificate_validation" "aws_managed_https_certificate" {
   timeouts {
     create = "5m"
   }
+}
+
+resource "aws_cloudfront_origin_access_identity" "website" {
+  count = length(local.redirect_names)
+  comment = "HTTPS fronting for ${element(keys(local.redirect_names), count.index)}.${var.domain_name}"
 }
 
 
