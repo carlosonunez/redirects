@@ -78,10 +78,11 @@ resource "aws_s3_bucket_public_access_block" "redirect_bucket" {
   restrict_public_buckets = false
 }
 
-resource "aws_s3_bucket_object" "redirect_index_html" {
+resource "aws_s3_object" "redirect_index_html" {
   depends_on = [
     aws_s3_bucket.redirect_bucket
   ]
+  acl = "public-read"
   count = length(local.redirect_names)
   bucket = "${element(keys(local.redirect_names), count.index)}.${var.domain_name}"
   key = "index.html"
