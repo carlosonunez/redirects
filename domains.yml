@@ -1,7 +1,8 @@
 ---
 domains:
   linkedin: https://linkedin.com/in/carlosinhtx
-  meet: https://calendly.com/carlosinhtx
+  meet: https://fantastical.app/carlosnunez
+  zoom: https://us06web.zoom.us/j/5557774670
   github: https://github.com/carlosonunez
   dnsprofile: https://github.com/carlosonunez/bash-dotfiles/raw/main/ios-profiles/adguard-except-home-wifi.mobileconfig
   traveldnsprofile: https://github.com/carlosonunez/bash-dotfiles/raw/main/ios-profiles/adguard-except-home-and-travel-router.mobileconfig
