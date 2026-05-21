@@ -14,7 +14,7 @@ export AWS_REGION="${AWS_REGION?Please define AWS_REGION}"
 >&2 echo "INFO: Logging into AWS; please stand by."
 session_name="slack-apis-deploy-$(date +%s)"
 export AWS_SESSION_NAME="$session_name"
-if ! aws_session_info=$(docker-compose run -T --rm obtain-aws-session-token)
+if ! aws_session_info=$(docker compose run -T --rm obtain-aws-session-token)
 then
   >&2 echo "ERROR: Unable to log into AWS with credentials provided in .env; received:
 $aws_session_info"
@@ -28,4 +28,4 @@ export AWS_ACCESS_KEY_ID="$access_key"
 export AWS_SECRET_ACCESS_KEY="$secret_key"
 export AWS_SESSION_TOKEN="$session_token"
 
-docker-compose run --rm deploy
+docker compose run --rm deploy
