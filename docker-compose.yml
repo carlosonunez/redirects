@@ -4,14 +4,14 @@ volumes:
   tf-data: {}
 services:
   aws:
-    image: amazon/aws-cli:2.2.9
+    image: amazon/aws-cli:2.32.5
     env_file: .env
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
       - AWS_ROLE_ARN
-  terraform:
-    image: carlosnunez/terraform:1.3.0
+  tofu:
+    image: ghcr.io/opentofu/opentofu:1.12.1
     env_file: .env
     working_dir: /app
     environment:
@@ -28,16 +28,16 @@ services:
     entrypoint:
       - /scripts/execute_terraform.sh
   verify:
-    extends: terraform
+    extends: tofu
     command:
       - plan
   deploy:
-    extends: terraform
+    extends: tofu
     command:
       - apply
       - -auto-approve
   destroy:
-    extends: terraform
+    extends: tofu
     command:
       - destroy
       - -auto-approve
