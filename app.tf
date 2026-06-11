@@ -28,6 +28,7 @@ data "aws_iam_policy_document" "policy" {
   statement {
     sid = "SvcAccountCanDoAnything"
     actions = ["s3:*"]
+    resources = ["${aws_s3_bucket.bucket[each.key].arn}/*"]
     principals {
       type = "AWS"
       identifiers = [ data.aws_caller_identity.self.arn ]
