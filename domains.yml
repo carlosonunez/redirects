@@ -1,5 +1,6 @@
 ---
 domains:
+  setup: https://raw.githubusercontent.com/carlosonunez/bash-dotfiles/refs/heads/main/setup.sh
   linkedin: https://linkedin.com/in/carlosinhtx
   meet: https://fantastical.app/carlosnunez
   zoom: https://us06web.zoom.us/j/5557774670
